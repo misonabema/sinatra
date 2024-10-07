@@ -54,3 +54,12 @@ textarea {
     margin-right: 5px;
     cursor: pointer;
 }
+
+.memo-item {
+    display: flex;
+    align-items: center;
+}
+
+.delete-form {
+    margin-left: 10px;
+}
