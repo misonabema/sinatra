@@ -2,13 +2,3 @@ glob: "**/*.erb"
 linters:
    RequireInputAutocomplete:
      enabled: false
-
----
-glob: "**/*.{html,text,js}{+*,}.erb"
-exclude:
-  - '**/vendor/**/*'
-  - '**/node_modules/**/*'
-linters:
-  SelfClosingTag:
-    enabled: false
-
