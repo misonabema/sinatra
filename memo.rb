@@ -14,7 +14,7 @@ def load
 end
 
 def save(memos)
-  File.write(MEMO_FILE, JSON.pretty_generate(memos))
+  File.write(MEMO_FILE, "#{JSON.pretty_generate(memos)}\n")
 end
 
 def h(text)
@@ -23,10 +23,12 @@ end
 
 get '/' do
   @memos = load
+  @title = 'メモ一覧'
   erb :index
 end
 
 get '/memos/new' do
+  @title = '新規メモ作成'
   erb :new
 end
 
@@ -43,6 +45,7 @@ get '/memos/:id' do
   @memo = load[@id]
 
   if @memo
+    @title = @memo['title']
     erb :show
   else
     halt 404, 'メモが見つかりません'
@@ -54,6 +57,7 @@ get '/memos/:id/edit' do
   @memo = load[@id]
 
   if @memo
+    @title = 'メモ編集'
     erb :edit
   else
     halt 404, 'メモが見つかりません'
