@@ -1,33 +1,21 @@
-<!DOCTYPE html>
-<html lang="ja">
+<header class="page-header">
+    <h1>メモ一覧</h1>
+</header>
+<div class="main">
+    <form action="/memos/new" method="GET">
+        <button type="submit" class="button">新規メモ作成</button>
+    </form>
 
-<head>
-    <meta charset="UTF-8">
-    <title>メモ一覧</title>
-    <link href="/style.css" rel="stylesheet">
-</head>
-
-<body>
-    <header class="page-header">
-        <h1>メモ一覧</h1>
-    </header>
-    <div class="main">
-        <form action="/memos/new" method="GET">
-            <button type="submit" class="button">新規メモ作成</button>
-        </form>
-
-        <ul>
-            <% @memos.each do |id, memo| %>
-                <li>
-                    <a href="/memos/<%= id %>"><%= h memo['title'] %></a>
-                    <form action="/memos/<%= id %>" method="POST" style="display:inline;">
-                        <input type="hidden" name="_method" value="DELETE">
-                        <button type="submit" class="button">削除</button>
-                    </form>
-                </li>
-            <% end %>
-        </ul>
-    </div>
-</body>
-
-</html>
+    <ul>
+        <% @memos.each do |id, memo| %>
+            <li class="memo-item">
+                <a href="/memos/<%= id %>"><%= h memo['title'] %></a>
+                <form action="/memos/<%= id %>" method="POST" class="delete-form">
+                    <input type="hidden" name="_method" value="DELETE">
+                    <button type="submit" class="button">削除</button>
+                </form>
+            </li>
+            <br>
+        <% end %>
+    </ul>
+</div>
