@@ -1,0 +1,26 @@
+<header class="page-header">
+    <h1>メモ編集</h1>
+</header>
+ <div class="main">
+    <form action="/memos/<%= @id %>" method="POST">
+        <input type="hidden" name="_method" value="PATCH">
+
+        <div>
+            <label for="title">タイトル</label>
+            <input type="text" id="title" name="title" value="<%= h @memo['title'] %>" required>
+        </div>
+
+        <div>
+            <label for="content">内容</label>
+            <textarea id="content" name="content" required><%= h @memo['content'] %></textarea>
+        </div>
+
+        <input type="submit" class="button" value="変更">
+    </form>
+
+    <br>
+
+    <form action="/memos/<%= @id %>" method="GET">
+        <button type="submit" class="button">取り消し</button>
+    </form>
+</div>
