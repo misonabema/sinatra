@@ -1,24 +1,42 @@
 # frozen_string_literal: true
 
 require 'sinatra'
-require 'json'
+require 'pg'
 require 'securerandom'
 require 'erb'
 
-MEMO_FILE = 'memo.json'
-
-File.exist?(MEMO_FILE) || File.write(MEMO_FILE, JSON.generate({}))
-
-def load
-  JSON.parse(File.read(MEMO_FILE))
+configure do
+  set :db_connection, PG.connect(dbname: 'sinatra_memo')
 end
 
-def save(memos)
-  File.write(MEMO_FILE, "#{JSON.pretty_generate(memos)}\n")
+before do
+  @db = settings.db_connection
+  @db.reset if @db.finished?
 end
 
 def h(text)
   ERB::Util.html_escape(text)
+end
+
+def load(id = nil)
+  if id
+    @db.exec_params('SELECT * FROM memos WHERE uuid = $1 LIMIT 1', [id]).first
+  else
+    @db.exec('SELECT * FROM memos ORDER BY created_at DESC')
+  end
+end
+
+def create(title, content)
+  uuid = SecureRandom.uuid
+  @db.exec_params('INSERT INTO memos (uuid, title, content) VALUES ($1, $2, $3)', [uuid, title, content])
+end
+
+def update(id, title, content)
+  @db.exec_params('UPDATE memos SET title = $1, content = $2, updated_at = NOW() WHERE uuid = $3', [title, content, id])
+end
+
+def delete(id)
+  @db.exec_params('DELETE FROM memos WHERE uuid = $1', [id])
 end
 
 get '/' do
@@ -33,16 +51,12 @@ get '/memos/new' do
 end
 
 post '/memos' do
-  memos = load
-  id = SecureRandom.uuid
-  memos[id] = { 'title' => params[:title], 'content' => params[:content] }
-  save(memos)
+  create(params[:title], params[:content])
   redirect '/'
 end
 
 get '/memos/:id' do
-  @id = params[:id]
-  @memo = load[@id]
+  @memo = load(params[:id])
 
   if @memo
     @title = @memo['title']
@@ -53,8 +67,7 @@ get '/memos/:id' do
 end
 
 get '/memos/:id/edit' do
-  @id = params[:id]
-  @memo = load[@id]
+  @memo = load(params[:id])
 
   if @memo
     @title = 'メモ編集'
@@ -65,22 +78,11 @@ get '/memos/:id/edit' do
 end
 
 patch '/memos/:id' do
-  memos = load
-  id = params[:id]
-
-  if memos[id]
-    memos[id]['title'] = params[:title]
-    memos[id]['content'] = params[:content]
-    save(memos)
-    redirect "/memos/#{id}"
-  else
-    halt 404, 'メモが見つかりません'
-  end
+  update(params[:id], params[:title], params[:content])
+  redirect "/memos/#{params[:id]}"
 end
 
 delete '/memos/:id' do
-  memos = load
-  memos.delete(params[:id])
-  save(memos)
+  delete(params[:id])
   redirect '/'
 end
