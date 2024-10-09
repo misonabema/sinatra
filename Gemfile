@@ -3,7 +3,7 @@
 source 'https://rubygems.org'
 
 gem 'erb_lint'
-gem 'json'
+gem 'pg'
 gem 'puma'
 gem 'rackup'
 gem 'rexml', '~> 3.2', '>= 3.2.4'
