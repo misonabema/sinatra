@@ -7,11 +7,11 @@
 </div>
 
 <div class="menu">
-    <form action="/memos/<%= @id %>/edit" method="GET">
+    <form action="/memos/<%= @memo['uuid'] %>/edit" method="GET">
         <button type="submit" class="button">編集</button>
     </form>
 
-    <form action="/memos/<%= @id %>" method="POST">
+    <form action="/memos/<%= @memo['uuid'] %>" method="POST">
         <input type="hidden" name="_method" value="DELETE">
         <button type="submit" class="button">削除</button>
     </form>

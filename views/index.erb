@@ -7,10 +7,10 @@
     </form>
 
     <ul>
-        <% @memos.each do |id, memo| %>
+        <% @memos.each do |memo| %>
             <li class="memo-item">
-                <a href="/memos/<%= id %>"><%= h memo['title'] %></a>
-                <form action="/memos/<%= id %>" method="POST" class="delete-form">
+                <a href="/memos/<%= memo['uuid'] %>"><%= h memo['title'] %></a>
+                <form action="/memos/<%= memo['uuid'] %>" method="POST" class="delete-form">
                     <input type="hidden" name="_method" value="DELETE">
                     <button type="submit" class="button">削除</button>
                 </form>
